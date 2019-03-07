@@ -43,7 +43,7 @@ type user struct {
 func getGuests() ([]Guest, error) {
 	name := "ELKV5ODEON"
 	safename := url.QueryEscape(name)
-	url := fmt.Sprintf("http://SRV:8080/?name=%s", safename)
+	url := fmt.Sprintf("http://192.168.3.3:8080/?name=%s", safename)
 
 	// Build the request
 	req, err := http.NewRequest("GET", url, nil)
@@ -143,6 +143,10 @@ func main() {
 		guests, err := getGuests()
 		if err == nil {
 			log.Println("Number of guests = ", len(guests))
+		} else {
+			log.Println("Connection fail.\nCould get data from hotel api server.")
+			time.Sleep(*interval)
+			continue
 		}
 		users, err := getHotspotUsers()
 		if err == nil {
