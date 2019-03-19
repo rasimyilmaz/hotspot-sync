@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -41,9 +42,10 @@ type user struct {
 }
 
 func getGuests() ([]Guest, error) {
-	name := "ELKV5ODEON"
+	name := os.Getenv("hotspot_profile_name")
+	ip := os.Getenv("hotspot_remote_ip")
 	safename := url.QueryEscape(name)
-	url := fmt.Sprintf("http://192.168.3.3:8080/?name=%s", safename)
+	url := fmt.Sprint("http://", ip, ":8080/?name=%s", safename)
 
 	// Build the request
 	req, err := http.NewRequest("GET", url, nil)
@@ -101,6 +103,8 @@ func getHotspotUsers() ([]user, error) {
 	}
 	return users, nil
 }
+
+//Atol is a function for changing Turkish characters to english
 func Atol(word string) string {
 	var replacer = strings.NewReplacer("İ", "I", "Ü", "U", "Ğ", "G", "Ş", "S", "Ö", "O", "Ç", "C")
 	return replacer.Replace(word)
@@ -138,6 +142,12 @@ func createHotspotUsers(users []user) error {
 	return nil
 }
 func main() {
+	f, err := os.OpenFile("hotspot-sync.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+	defer f.Close()
+	log.SetOutput(f)
 	for {
 		log.Printf("Sync started...")
 		guests, err := getGuests()
