@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -142,7 +143,16 @@ func createHotspotUsers(users []user) error {
 	return nil
 }
 func main() {
-	f, err := os.OpenFile("hotspot-sync.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	dir, err := os.Getwd()
+	if err != nil {
+		return
+	}
+	separator := "/"
+	if runtime.GOOS == "windows" {
+		separator = "\\"
+	}
+	filename := fmt.Sprint(dir, separator, "hotspot-sync.log")
+	f, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalf("error opening file: %v", err)
 	}
