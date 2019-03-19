@@ -45,7 +45,7 @@ func getGuests() ([]Guest, error) {
 	name := os.Getenv("hotspot_profile_name")
 	ip := os.Getenv("hotspot_remote_ip")
 	safename := url.QueryEscape(name)
-	url := fmt.Sprint("http://", ip, ":8080/?name=%s", safename)
+	url := fmt.Sprint("http://", ip, ":8080/?name=", safename)
 
 	// Build the request
 	req, err := http.NewRequest("GET", url, nil)
