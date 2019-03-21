@@ -1,0 +1,14 @@
+[Unit]
+Description=Mikrotik Hotspot User Sync
+After=network-online.target
+
+[Service]
+Environment="hotspot_remote_ip=192.168.3.3"
+Environment="hotspot_profile_name=ELKV5ODEON"
+Type=simple
+WorkingDirectory=/home/rasim/go/src/github.com/rasimyilmaz/hotspot-sync
+ExecStart=/home/rasim/go/src/github.com/rasimyilmaz/hotspot-sync/hotspot-sync
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
